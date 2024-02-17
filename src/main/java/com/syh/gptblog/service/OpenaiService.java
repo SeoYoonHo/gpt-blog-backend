@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -18,11 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class OpenaiService {
     private final PostRepository postRepository;
 
-    public PostDto.GptAnswerResponse getAnswerPost(PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
-        // 1.openai 호출을 통해 응답 받아오기
-//        OpenApiDto.ApiResponseDto apiResponseDto = ApiUtil.getGptAnswer(getGptAnswerRequest);
-        ApiUtil.getGptAnswerByWebClient(getGptAnswerRequest);
-//        log.info(apiResponseDto.toString());
+    public PostDto.GptAnswerResponse getAnswerPost(
+            PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
+        // 1.openai 호출을 통해 응답 받아오기(Mono<String)
+        OpenApiDto.ApiResponseDto apiResponseDto = ApiUtil.getGptAnswer(getGptAnswerRequest);
+        System.out.println(apiResponseDto);
 
         // 1.1 응답 json -> Post 객체 변환
         Post post = new Post();
@@ -36,5 +37,12 @@ public class OpenaiService {
         // 3.1. Post -> PostResponseDto
 
         return gptAnswerResponse;
+    }
+
+    public Post transformPost(String content) {
+        Post post = new Post();
+        //변환 로직
+
+        return post;
     }
 }
