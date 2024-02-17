@@ -62,6 +62,15 @@ public class OpenApiDto {
 
         @JsonProperty("messages")
         private OpenAIMessage[] messages;
+
+        @JsonProperty("max_tokens")
+        private int maxTokens;
+        @JsonProperty("temperature")
+        private double temperature;
+        @JsonProperty("top_p")
+        private double topP;
+        @JsonProperty("stream")
+        private boolean stream;
     }
 
     @Getter
