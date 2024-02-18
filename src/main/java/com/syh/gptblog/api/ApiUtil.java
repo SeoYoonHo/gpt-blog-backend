@@ -36,7 +36,6 @@ public class ApiUtil {
 
     public OpenApiDto.ApiResponseDto getGptAnswer(
             PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
-        log.info("apiKey : " + apiKey);
         ObjectMapper mapper = new ObjectMapper();
 
         // HTTP 요청 헤더 설정

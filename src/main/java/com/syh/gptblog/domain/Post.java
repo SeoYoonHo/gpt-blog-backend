@@ -26,5 +26,6 @@ public class Post extends BaseTimeEntity{
     private String published;
     private String lastEditedAt;
     private String blurUrl;
+    @Column(length = 2000)
     private String content;
 }

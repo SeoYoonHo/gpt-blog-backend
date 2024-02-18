@@ -5,6 +5,7 @@ import com.syh.gptblog.api.ApiUtil;
 import com.syh.gptblog.domain.Post;
 import com.syh.gptblog.dto.OpenApiDto;
 import com.syh.gptblog.dto.PostDto;
+import com.syh.gptblog.mapper.PostMapper;
 import com.syh.gptblog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,6 @@ public class OpenaiService {
             PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
         // 1.openai 호출을 통해 응답 받아오기(Mono<String)
         OpenApiDto.ApiResponseDto apiResponseDto = apiUtil.getGptAnswer(getGptAnswerRequest);
-        System.out.println(apiResponseDto);
 
         // 1.1 응답 json -> Post 객체 변환
         Post post = new Post();
@@ -34,9 +34,8 @@ public class OpenaiService {
         postRepository.save(post);
 
         // 3.응답 게시글 내려주기
-        PostDto.GptAnswerResponse gptAnswerResponse = new PostDto.GptAnswerResponse();
-
         // 3.1. Post -> PostResponseDto
+        PostDto.GptAnswerResponse gptAnswerResponse = PostMapper.INSTANCE.postToGptResponseDto(post);
 
         return gptAnswerResponse;
     }

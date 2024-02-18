@@ -17,6 +17,7 @@ public class PostDto {
         private String published;
         private String lastEditedAt;
         private String blurUrl;
+        private String content;
         private LocalDateTime createDate;
         private LocalDateTime updateDate;
     }
