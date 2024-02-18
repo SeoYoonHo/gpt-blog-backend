@@ -1,6 +1,9 @@
 spring:
   application:
     name: gpt-blog-backend
+  profiles:
+    include:
+      - appKey
 #  h2:
 #    console:
 #      path: /h2-console

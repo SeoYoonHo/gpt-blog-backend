@@ -18,11 +18,12 @@ import reactor.core.publisher.Mono;
 @Transactional
 public class OpenaiService {
     private final PostRepository postRepository;
+    private final ApiUtil apiUtil;
 
     public PostDto.GptAnswerResponse getAnswerPost(
             PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
         // 1.openai 호출을 통해 응답 받아오기(Mono<String)
-        OpenApiDto.ApiResponseDto apiResponseDto = ApiUtil.getGptAnswer(getGptAnswerRequest);
+        OpenApiDto.ApiResponseDto apiResponseDto = apiUtil.getGptAnswer(getGptAnswerRequest);
         System.out.println(apiResponseDto);
 
         // 1.1 응답 json -> Post 객체 변환

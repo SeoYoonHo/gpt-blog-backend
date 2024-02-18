@@ -1,12 +1,13 @@
 package com.syh.gptblog.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syh.gptblog.dto.OpenApiDto;
 import com.syh.gptblog.dto.PostDto;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,30 +15,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class ApiUtil {
-    private static RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+    private ObjectMapper mapper =  new ObjectMapper();
 
     // OpenAI API 엔드포인트 URL 설정
-    private static String apiUrl = "https://api.openai.com/v1/completions";
+    @Value("${gpt.url}")
+    private String apiUrl;
 
     // OpenAI API 키 설정
-    private static String apiKey = "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";
+    @Value("${gpt.apiKey}")
+    private String apiKey;
 
-    private static ObjectMapper mapper = new ObjectMapper();
-
-    @Autowired
-    public ApiUtil(RestTemplate restTemplate) {
-        ApiUtil.restTemplate = restTemplate;
-    }
-
-    public static OpenApiDto.ApiResponseDto getGptAnswer(PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
+    public OpenApiDto.ApiResponseDto getGptAnswer(
+            PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
+        log.info("apiKey : " + apiKey);
         ObjectMapper mapper = new ObjectMapper();
 
         // HTTP 요청 헤더 설정
@@ -60,14 +59,15 @@ public class ApiUtil {
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBodyJson, headers);
 
         // OpenAI API 호출
-        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity,
+                String.class);
 
         // 응답 출력
         String responseBody = responseEntity.getBody();
         return mapper.readValue(responseBody, OpenApiDto.ApiResponseDto.class);
     }
 
-    public static Mono<String> getGptAnswerByWebClient(
+    public Mono<String> getGptAnswerByWebClient(
             PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -97,12 +97,12 @@ public class ApiUtil {
                                              .retrieve() // 응답 받기
                                              .bodyToFlux(String.class)
                                              .collectList()
-                                             .map(ApiUtil::processData);
+                                             .map(this::processData);
 
         return responseMono;
     }
 
-    private static String processData(List<String> dataList) {
+    private String processData(List<String> dataList) {
         dataList.remove(dataList.size() - 1);
         StringBuilder sb = new StringBuilder();
         try {
