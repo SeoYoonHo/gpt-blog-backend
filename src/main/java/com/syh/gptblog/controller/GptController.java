@@ -21,7 +21,7 @@ public class GptController {
     private final OpenaiService openaiService;
 
     @PostMapping("/question")
-    public  ResponseEntity<CommonResponse.DataResponse<PostDto.GptAnswerResponse>>  answerPost(@RequestBody PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
+    public ResponseEntity<CommonResponse.DataResponse<PostDto.GptAnswerResponse>> answerPost(@RequestBody PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
         PostDto.GptAnswerResponse answerPost = openaiService.getAnswerPost(getGptAnswerRequest);
         return ResponseEntity.ok(CommonResponse.DataResponse.of("001", "Success", answerPost));
     }

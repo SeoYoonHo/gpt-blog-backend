@@ -4,30 +4,31 @@ spring:
   profiles:
     include:
       - appKey
-#  h2:
-#    console:
-#      path: /h2-console
-#      enabled: true
-#  datasource:
-#    url: jdbc:h2:mem:testdb
-#    username: sa
-#    paswword:
-#    driver-class-name: org.h2.Driver
-#  jpa:
-#    hibernate:
-#      ddl-auto: create #?????? ??? ???? ??? ?? ??
-#    properties:
-#      hibernate:
-#        format_sql: true
-#    defer-datasource-initialization: true
-#  sql:
-#    init:
-#      mode: always
-#      data-locations: classpath:db/data.sql
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    paswword:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create #애플리케이션 실행시 테이블을 지우고 다시 생성
+    properties:
+      hibernate:
+        #show_sql: true --> sysout으로 찍는
+        format_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:db/data.sql
 
 
 logging:
   level:
     com.study.boardExample: debug
     org.hibernate.SQL: debug
-    org.hibernate.type: trace #?? ???? ???? ??
+    org.hibernate.type: trace

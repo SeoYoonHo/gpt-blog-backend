@@ -19,8 +19,6 @@ public class Post extends BaseTimeEntity{
     private Long id;
     private String slug;
     private String title;
-    @ElementCollection
-    private List<String> categories = new ArrayList<>();
     private String cover;
     private String date;
     private String published;
@@ -28,4 +26,7 @@ public class Post extends BaseTimeEntity{
     private String blurUrl;
     @Column(length = 2000)
     private String content;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<PostCategory> categories = new ArrayList<>();
 }
