@@ -18,7 +18,7 @@ public interface PostMapper {
 
     PostDto.GptAnswerResponse postToGptResponseDto(Post post);
 
-    @Mapping(target = "categoryList", source = "categories")
+    @Mapping(target = "categories", source = "categories")
     PostDto.PostResponse postToPostResponseDto(Post post);
 
     default List<String> categoriesToCategoryNameList(List<PostCategory> categories) {

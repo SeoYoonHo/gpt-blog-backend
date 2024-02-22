@@ -37,7 +37,7 @@ public class PostDto {
         private String lastEditedAt;
         private String blurUrl;
         private String content;
-        private List<String> categoryList;
+        private List<String> categories;
     }
 
 }
