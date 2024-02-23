@@ -7,10 +7,7 @@ import com.syh.gptblog.service.OpenaiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -21,6 +18,7 @@ public class GptController {
     private final OpenaiService openaiService;
 
     @PostMapping("/question")
+    @CrossOrigin
     public ResponseEntity<CommonResponse.DataResponse<PostDto.GptAnswerResponse>> answerPost(@RequestBody PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
         PostDto.GptAnswerResponse answerPost = openaiService.getAnswerPost(getGptAnswerRequest);
         return ResponseEntity.ok(CommonResponse.DataResponse.of("001", "Success", answerPost));

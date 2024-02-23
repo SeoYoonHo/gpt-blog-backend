@@ -30,7 +30,7 @@ public class OpenaiService {
         post.setTitle("My First Post");
         post.setContent("This is the content of my first post.");
         post.setCover("coverImageUrl");
-        post.setDate_a("2021-01-01");
+        post.setDate("2021-01-01");
         post.setPublished("true");
         post.setLastEditedAt("2021-01-02");
         post.setBlurUrl("blurImageUrl");
