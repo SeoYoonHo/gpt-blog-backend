@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OpenApiDto {
@@ -27,7 +28,7 @@ public class OpenApiDto {
         @ToString
         public static class Choice {
             private int index;
-            private String text;
+            private Message message;
             private Object logprobs; // 실제 타입에 맞게 변경 필요
             private String finish_reason;
 
@@ -42,20 +43,28 @@ public class OpenApiDto {
             private int completion_tokens;
             private int total_tokens;
         }
+
     }
 
     @Getter
     @Setter
+    @ToString
     public static class OpenAIRequest {
         @JsonProperty("model")
         private String model;
-        @JsonProperty("prompt")
-        private String prompt;
-        @JsonProperty("max_tokens")
-        private int maxTokens;
-        @JsonProperty("temperature")
-        private double temperature;
-        @JsonProperty("stream")
-        private boolean stream;
+        @JsonProperty("messages")
+        private List<Message> messages = new ArrayList<>();
     }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class Message{
+        @JsonProperty("role")
+        private String role;
+        @JsonProperty("content")
+        private String content;
+    }
+
+
 }

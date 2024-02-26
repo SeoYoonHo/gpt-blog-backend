@@ -48,11 +48,21 @@ public class ApiUtil {
 
         // HTTP 요청 바디 설정
         OpenApiDto.OpenAIRequest requestBody = new OpenApiDto.OpenAIRequest();
-        requestBody.setModel("gpt-3.5-turbo-instruct");
-        requestBody.setStream(false);
-        requestBody.setMaxTokens(1000); // 응답의 길이를 늘리기 위해 max_tokens 값을 증가
-        requestBody.setTemperature(0); // 응답의 창의성을 위해 temperature 값을 설정
-        requestBody.setPrompt(inputText);
+        requestBody.setModel("gpt-3.5-turbo");
+
+        OpenApiDto.Message message1 = new OpenApiDto.Message();
+        String requestFormat = ", 원하는 응답 형태 : {\"slug\":\"슬러그명\",\"title\":\"제목\",\"categories\":카테고리 리스트," +
+                "\"cover\":\"커버 이미지 url\",\"date\":\"작성날짜\",\"published\":\"게시 여부(true or false)\"," +
+                "\"lastEditedAt\":\"마지막 수정날짜 timestamp\",\"blurUrl\":\"blurImageUrl\",\"content\":\"포스트 내용\"}, 그리고 문자열을 java 코드내에서 사용할 수 있게 적절한 이스케이프 처리를 해줘";
+        message1.setRole("system");
+        message1.setContent(requestFormat);
+
+        OpenApiDto.Message message2 = new OpenApiDto.Message();
+        message2.setRole("user");
+        message2.setContent(inputText);
+
+        requestBody.getMessages().add(message1);
+        requestBody.getMessages().add(message2);
 
         String requestBodyJson = mapper.writeValueAsString(requestBody);
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBodyJson, headers);
@@ -64,58 +74,5 @@ public class ApiUtil {
         // 응답 출력
         String responseBody = responseEntity.getBody();
         return mapper.readValue(responseBody, OpenApiDto.ApiResponseDto.class);
-    }
-
-    public Mono<String> getGptAnswerByWebClient(
-            PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-
-        // WebClient 인스턴스 생성
-        WebClient webClient = WebClient.builder()
-                                       .baseUrl(apiUrl)
-                                       .defaultHeader("Authorization", "Bearer " + apiKey) // API 키 설정
-                                       .defaultHeader("Content-Type", "application/json")
-                                       .build();
-
-        // 요청문장 조립
-        String inputText = getGptAnswerRequest.getContents();
-
-        // HTTP 요청 바디 설정
-        OpenApiDto.OpenAIRequest requestBody = new OpenApiDto.OpenAIRequest();
-        requestBody.setModel("gpt-3.5-turbo-instruct");
-        requestBody.setStream(true);
-        requestBody.setMaxTokens(1000); // 응답의 길이를 늘리기 위해 max_tokens 값을 증가
-        requestBody.setTemperature(0); // 응답의 창의성을 위해 temperature 값을 설정
-        requestBody.setPrompt(inputText);
-
-        String requestBodyJson = mapper.writeValueAsString(requestBody);
-
-        // 요청 보내기
-        Mono<String> responseMono = webClient.post() // HTTP POST 요청
-                                             .bodyValue(requestBodyJson) // 이미 준비된 JSON 요청 바디 사용
-                                             .retrieve() // 응답 받기
-                                             .bodyToFlux(String.class)
-                                             .collectList()
-                                             .map(this::processData);
-
-        return responseMono;
-    }
-
-    private String processData(List<String> dataList) {
-        dataList.remove(dataList.size() - 1);
-        StringBuilder sb = new StringBuilder();
-        try {
-            for (String str : dataList) {
-                OpenApiDto.ApiResponseDto apiResponseDto = mapper.readValue(str, OpenApiDto.ApiResponseDto.class);
-
-                sb.append(apiResponseDto.getChoices()
-                                        .get(0)
-                                        .getText());
-            }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        return sb.toString();
     }
 }

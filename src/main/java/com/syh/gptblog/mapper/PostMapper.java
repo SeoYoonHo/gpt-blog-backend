@@ -18,6 +18,9 @@ public interface PostMapper {
 
     PostDto.GptAnswerResponse postToGptResponseDto(Post post);
 
+    @Mapping(target = "categories", ignore = true)
+    Post gptResponseDtoToPost(PostDto.GptAnswerResponse gptAnswerResponse);
+
     @Mapping(target = "categories", source = "categories")
     PostDto.PostResponse postToPostResponseDto(Post post);
 
