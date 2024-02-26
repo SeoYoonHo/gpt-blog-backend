@@ -33,7 +33,7 @@ public class OpenaiService {
             PostDto.GetGptAnswerRequest getGptAnswerRequest) throws JsonProcessingException {
         // 1.openai 호출을 통해 응답 받아오기(Mono<String)
         OpenApiDto.ApiResponseDto apiResponseDto = apiUtil.getGptAnswer(getGptAnswerRequest);
-        log.info(apiResponseDto.toString());
+//        log.info(apiResponseDto.toString());
 
         // 1.1 응답 json -> PostResponseDto 객체 변환
         ObjectMapper objectMapper = new ObjectMapper();
