@@ -1,0 +1,15 @@
+stages:
+  - build
+  - deploy
+
+build_image:
+  stage: build
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
+  script:
+    - docker build -t harbor-registry.harbor.svc.cluster.local:5000/gpt-blog/gpt-blog-backend:$CI_COMMIT_REF_NAME .
+    - docker login -u $HARBOR_USERNAME -p $HARBOR_PASSWORD harbor-registry.harbor.svc.cluster.local:5000
+    - docker push harbor-registry.harbor.svc.cluster.local:5000/gpt-blog/gpt-blog-backend:$CI_COMMIT_REF_NAME
+  only:
+    - master
